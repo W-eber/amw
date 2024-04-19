@@ -36,10 +36,6 @@ public class ProfileService {
                     profileOrig.setUsername(profile.getUsername());
                     profileOrig.setBio(profile.getBio());
                     profileOrig.setJoinDate(profile.getJoinDate());
-                    profileOrig.setMinecraftAccounts(profile.getMinecraftAccounts());
-                    profileOrig.setDiscordAccounts(profile.getDiscordAccounts());
-                    profileOrig.setYoutubeAccounts(profile.getYoutubeAccounts());
-                    profileOrig.setSteamAccounts(profile.getSteamAccounts());
                     return repository.save(profileOrig);
                 })
                 .orElseGet(() -> repository.save(profile));

@@ -34,7 +34,6 @@ public class MinecraftAccountService {
                 .map(maOrig -> {
                     maOrig.setUsername(ma.getUsername());
                     maOrig.setNameChanges(ma.getNameChanges());
-                    maOrig.setCapes(ma.getCapes());
                     maOrig.setProfile(ma.getProfile());
                     return repository.save(maOrig);
                 })
