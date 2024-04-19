@@ -1,6 +1,6 @@
-package ch.weber.david.amw.minecraftaccount.capes;
+package ch.weber.david.amw.steamaccount.items;
 
-import ch.weber.david.amw.minecraftaccount.MinecraftAccount;
+import ch.weber.david.amw.steamaccount.SteamAccount;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,16 +11,16 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Capes {
+public class Items {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    private double price;
 
     @ManyToOne
-    @JoinColumn(name = "minecraft_account_id")
-    private MinecraftAccount minecraftAccount;
+    @JoinColumn(name = "steam_account_id")
+    private SteamAccount steamAccount;
 
     // Constructor, getters, and setters
 }
-
