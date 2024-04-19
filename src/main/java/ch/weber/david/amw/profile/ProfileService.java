@@ -26,7 +26,6 @@ public class ProfileService {
     }
 
     public Profile insertProfile(Profile profile) {
-        System.out.println(profile);
         return repository.save(profile);
     }
 
@@ -45,4 +44,5 @@ public class ProfileService {
         repository.deleteById(id);
         return new MessageResponse("Profile " + id + " deleted");
     }
+
 }

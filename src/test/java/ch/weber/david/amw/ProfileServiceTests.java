@@ -1,0 +1,46 @@
+package ch.weber.david.amw;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import ch.weber.david.amw.profile.Profile;
+import ch.weber.david.amw.profile.ProfileRepository;
+import ch.weber.david.amw.profile.ProfileService;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+class ProfileServiceTests {
+
+    private ProfileService profileService;
+    private final ProfileRepository profileRepositoryMock = mock(ProfileRepository.class);
+
+    private final Profile profileMock = mock(Profile.class);
+
+    @BeforeEach
+    void setUp() {
+        profileService = new ProfileService(profileRepositoryMock);
+    }
+
+    @Test
+    void createProfile() {
+        when(profileRepositoryMock.save(profileMock)).thenReturn(profileMock);
+        profileService.insertProfile(profileMock);
+        verify(profileRepositoryMock, times(1)).save(any());
+    }
+
+    @Test
+    void findProfile() {
+        when(profileRepositoryMock.findById(any())).thenReturn(Optional.ofNullable(profileMock));
+        Profile v = profileService.getProfile(any());
+        verify(profileRepositoryMock, times(1)).findById(any());
+    }
+
+    @Test
+    void deleteProfile() {
+        profileService.deleteProfile(any());
+        verify(profileRepositoryMock, times(1)).deleteById(any());
+    }
+}

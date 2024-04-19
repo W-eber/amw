@@ -35,12 +35,10 @@ public class Profile {
 
     }
 
-    // public Profile(String username, String bio, LocalDate joinDate, List<MinecraftAccount> minecraftAccounts,
-    //         List<DiscordAccount> discordaccounts, List<YoutubeAccount> youtubeAccounts,
-    //         List<SteamAccount> steamAccounts) {
-    //     this.username = username;
-    //     this.bio = bio;
-    //     this.joinDate = joinDate;
-    // }
+    public Profile(String username, String bio, LocalDate joinDate) {
+        this.username = username;
+        this.bio = bio;
+        this.joinDate = joinDate;
+    }
 
 }
