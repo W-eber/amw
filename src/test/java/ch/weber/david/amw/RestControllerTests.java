@@ -1,6 +1,7 @@
 package ch.weber.david.amw;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -30,8 +31,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import ch.weber.david.amw.profile.Profile;
@@ -72,9 +78,10 @@ class RestControllerTests {
                 .andExpect(content().string(containsString("username")));
     }
 
+
     @Test
-@Order(1)
-void testSaveProfile() throws Exception {
+    @Order(1)
+    void testSaveProfile() throws Exception {
     Profile profile = new Profile();
     profile.setUsername("username");
     profile.setBio("Test REST");
@@ -96,6 +103,52 @@ void testSaveProfile() throws Exception {
             .andExpect(content().string(containsString("Test REST")));
 }
 
+    @Test
+    @Order(2)
+    void testUpdateProfile() throws Exception {
+        String accessToken = obtainAccessToken();
+
+        Profile updatedProfile = new Profile();
+        updatedProfile.setUsername("UpdatedUsername");
+        updatedProfile.setBio("UpdatedBio");
+        LocalDate updatedJoinDate = LocalDate.parse("2024-04-19"); 
+        updatedProfile.setJoinDate(updatedJoinDate);
+
+        Long profileId = 1L;
+
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        String body = objectMapper.writeValueAsString(updatedProfile);
+
+        api.perform(put("/api/profile/{id}", profileId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body)
+                        .header("Authorization", "Bearer " + accessToken)
+                        .with(csrf()))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("UpdatedBio")));
+
+        
+        Profile retrievedProfile = profileRepository.findById(profileId).orElse(null);
+        assertNotNull(retrievedProfile);
+        assertEquals("UpdatedUsername", retrievedProfile.getUsername());
+        assertEquals("UpdatedBio", retrievedProfile.getBio());
+        assertEquals(updatedJoinDate, retrievedProfile.getJoinDate());
+    }
+
+    @Test
+    @Order(3) 
+    void testDeleteProfile() throws Exception {
+        String accessToken = obtainAccessToken();
+        Long profileId = 1L;
+
+        api.perform(delete("/api/profile/{id}", profileId)
+                        .header("Authorization", "Bearer " + accessToken)
+                        .with(csrf()))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("deleted")));
+
+        assertFalse(profileRepository.existsById(profileId));
+    }
 
     private String obtainAccessToken() {
 
@@ -107,8 +160,8 @@ void testSaveProfile() throws Exception {
         String body = "client_id=amw&" +
                 "grant_type=password&" +
                 "scope=openid profile roles offline_access&" +
-                "username=user&" +
-                "password=user";
+                "username=admin&" +
+                "password=admin";
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
 

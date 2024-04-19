@@ -21,7 +21,7 @@ class DBTests {
     private ProfileRepository profileRepository;
 
     @Test
-void insertProfile() {
+	void insertProfile() {
     LocalDate joinDate1 = LocalDate.parse("2024-04-18");
     Profile objProfile1 = this.profileRepository.save(new Profile("username", "biography", joinDate1));
     Assertions.assertNotNull(objProfile1.getId());
