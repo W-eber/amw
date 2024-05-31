@@ -23,12 +23,7 @@ public class MinecraftAccount {
     private String username;
 
     @Column(nullable = false)
-    @NotEmpty
     private int nameChanges;
-
-    private enum access {
-        MFA, SFA, NFA;
-    };
 
     @ManyToOne
     @JoinColumn(name = "profile_id")
